@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Calculadora de Consumo de Energia</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h2>Calculadora de Consumo de Energia</h2>
+		<form>
+			<div class="form-group">
+				<label for="aparelho">Aparelho:</label>
+				<input type="text" class="form-control" id="aparelho">
+			</div>
+			<div class="form-group">
+				<label for="potencia">Potência (Watts):</label>
+				<input type="number" class="form-control" id="potencia">
+			</div>
+			<div class="form-group">
+				<label for="tempo">Tempo de Funcionamento (horas):</label>
+				<input type="number" class="form-control" id="tempo">
+			</div>
+			<button type="button" class="btn btn-primary" onclick="adicionarAparelho()">Adicionar</button>
+		</form>
+		<br>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Aparelho</th>
+					<th>Potência (Watts)</th>
+					<th>Tempo de Funcionamento (horas)</th>
+					<th>Consumo (kWh)</th>
+					<th>Valor (R$)</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody id="lista">
+			</tbody>
+		</table>
+	</div>
+
+	<script>
+		var aparelhos = [];
+
+		function adicionarAparelho() {
+			var aparelho = document.getElementById("aparelho").value;
+			var potencia = document.getElementById("potencia").value;
+			var tempo = document.getElementById("tempo").value;
+			var consumo = (potencia * tempo) / 1000;
+			var valor = consumo * 0.062;
+			aparelhos.push([aparelho, potencia, tempo, consumo, valor]);
+			atualizarLista();
+		}
+
+		function removerAparelho(index) {
+			aparelhos.splice(index, 1);
+			atualizarLista();
+		}
+
+		function atualizarLista() {
+			var lista = document.getElementById("lista");
+			lista.innerHTML = "";
+			for (var i = 0; i < aparelhos.length; i++) {
+				var aparelho = aparelhos[i];
+				var tr = document.createElement("tr");
+				var td1 = document.createElement("td");
+				var td2 = document.createElement("td");
+				var td3 = document.createElement("td");
+				var td4 = document.createElement("td");
+				var td5 = document.createElement("td");
+                var td6 = document.createElement("td");
+                var botao = document.createElement("button");
+                botao.innerHTML = "Remover";
+                botao.className = "btn btn-danger";
+                botao.setAttribute("onclick", "removerAparelho(" + i + ")");
+                td1.innerHTML = aparelho[0];
+                td2.innerHTML = aparelho[1];
+                td3.innerHTML = aparelho[2];
+                td4.innerHTML = aparelho[3].toFixed(2);
+                td5.innerHTML = aparelho[4].toFixed(2);
+                td6.appendChild(botao);
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5);
+                tr.appendChild(td6);
+                lista.appendChild(tr);
+		}
+	}
+
+	function compartilharWhatsapp() {
+		var mensagem = "Lista de Aparelhos:\n";
+		for (var i = 0; i < aparelhos.length; i++) {
+			var aparelho = aparelhos[i];
+			mensagem += "- " + aparelho[0] + " - Consumo: " + aparelho[3].toFixed(2) + " kWh - Valor: R$ " + aparelho[4].toFixed(2) + "\n";
+		}
+		var url = "https://wa.me/?text=" + encodeURIComponent(mensagem);
+		window.open(url, "_blank");
+	}
+</script>
+
+<div class="container">
+	<button type="button" class="btn btn-success" onclick="compartilharWhatsapp()">Compartilhar no Whatsapp</button>
+</div>
+
